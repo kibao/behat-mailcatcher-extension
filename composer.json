@@ -1,0 +1,24 @@
+{
+    "name": "kibao/behat-mailcatcher-extension",
+    "description": "MailCatcher extension for Behat",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Przemysław Piechota",
+            "email": "kibao.pl@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.3",
+        "behat/behat": "~3.0",
+        "guzzle/guzzle": "~3.8",
+        "kibao/mailcatcher": "0.1.*@dev"
+    },
+    "require-dev": {
+        "phpspec/phpspec": "~2.0",
+        "swiftmailer/swiftmailer": "~5.0"
+    },
+    "autoload": {
+        "psr-4": { "Kibao\\": "src/" }
+    }
+}
