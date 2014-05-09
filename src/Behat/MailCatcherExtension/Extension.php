@@ -26,9 +26,12 @@ use Symfony\Component\DependencyInjection\Reference;
  */
 class Extension implements ExtensionInterface
 {
-    const MAILCATCHER_ID = 'kibao.mailcatcher';
-    const MAILCATCHER_GUZZLE_ID = 'kibao.mailcatcher.guzzle';
+    const MAILCATCHER_ID = 'kibao.mailcatcher.client';
+    const CONNECTION_ID = 'kibao.mailcatcher.connection';
+
+    const DEFAULT_CLIENT_ID = 'kibao.mailcatcher.client.default';
     const GUZZLE_ID = 'kibao.mailcatcher.guzzle.client';
+    const CONNECTION_GUZZLE_ID = 'kibao.mailcatcher.connection.guzzle';
     const ADDRESS_TRANSFORMER_ID = 'kibao.mailcatcher.transformer.address';
     const MESSAGE_TRANSFORMER_ID = 'kibao.mailcatcher.transformer.message';
 
@@ -74,7 +77,8 @@ class Extension implements ExtensionInterface
                     ->end()
                     ->defaultTrue()
                 ->end()
-                ->scalarNode('mailcatcher_client')->defaultValue(self::MAILCATCHER_GUZZLE_ID)->end()
+                ->scalarNode('mailcatcher_client')->defaultValue(self::DEFAULT_CLIENT_ID)->end()
+                ->scalarNode('mailcatcher_connection')->defaultValue(self::CONNECTION_GUZZLE_ID)->end()
             ->end()
         ->end();
     }
@@ -92,13 +96,15 @@ class Extension implements ExtensionInterface
     public function load(ContainerBuilder $container, array $config)
     {
         $this->loadTransformers($container);
-        $this->loadGuzzleClient($container, $config);
+        $this->loadGuzzleConnection($container, $config);
+        $this->loadClient($container);
         $this->loadContextInitializer($container);
 
         if ($config['purge_before_scenario']) {
             $this->loadPurgeListener($container);
         }
 
+        $container->setAlias(self::CONNECTION_ID, $config['mailcatcher_connection']);
         $container->setAlias(self::MAILCATCHER_ID, $config['mailcatcher_client']);
     }
 
@@ -111,19 +117,26 @@ class Extension implements ExtensionInterface
         $container->setDefinition(self::MESSAGE_TRANSFORMER_ID, $messageTransformer);
     }
 
-    private function loadGuzzleClient(ContainerBuilder $container, $config)
+    private function loadGuzzleConnection(ContainerBuilder $container, $config)
     {
         $container->setDefinition(self::GUZZLE_ID, new Definition('\Guzzle\Http\Client', array(
             $config['client']['url'] . ':' . $config['client']['port']
         )));
 
-        $container->setDefinition(self::MAILCATCHER_GUZZLE_ID, new Definition('Kibao\MailCatcher\GuzzleClient', array(
-            new Reference(self::MESSAGE_TRANSFORMER_ID),
+        $container->setDefinition(self::CONNECTION_GUZZLE_ID, new Definition('Kibao\MailCatcher\Connection\GuzzleConnection', array(
             new Reference(self::GUZZLE_ID),
         )));
     }
 
-    private function loadContextInitializer($container)
+    private function loadClient(ContainerBuilder $container)
+    {
+        $container->setDefinition(self::DEFAULT_CLIENT_ID, new Definition('Kibao\MailCatcher\Client', array(
+            new Reference(self::MESSAGE_TRANSFORMER_ID),
+            new Reference(self::CONNECTION_ID),
+        )));
+    }
+
+    private function loadContextInitializer(ContainerBuilder $container)
     {
         $definition = new Definition('Kibao\Behat\MailCatcherExtension\Context\Initializer\MailCatcherAwareInitializer', array(
             new Reference(self::MAILCATCHER_ID),
@@ -132,7 +145,7 @@ class Extension implements ExtensionInterface
         $container->setDefinition('kibao.mailcatcher.context_initializer.mailcatcher_aware', $definition);
     }
 
-    private function loadPurgeListener($container)
+    private function loadPurgeListener(ContainerBuilder $container)
     {
         $definition =  new Definition('Kibao\Behat\MailCatcherExtension\EventListener\PurgeListener', array(
             new Reference(self::MAILCATCHER_ID),
