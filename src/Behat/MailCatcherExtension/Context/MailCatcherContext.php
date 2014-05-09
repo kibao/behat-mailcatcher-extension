@@ -12,7 +12,6 @@ namespace Kibao\Behat\MailCatcherExtension\Context;
 
 use Behat\Behat\Context\Context;
 use Behat\Behat\Context\TranslatableContext;
-use Kibao\MailCatcher\ClientInterface;
 
 /**
  * MailCatcher context for Behat BDD tool.
@@ -20,34 +19,14 @@ use Kibao\MailCatcher\ClientInterface;
  *
  * @author Przemysław Piechota <kibao.pl@gmail.com>
  */
-class MailCatcherContext implements Context, MailCatcherAwareContext, TranslatableContext
+class MailCatcherContext extends RawMailCatcherContext implements TranslatableContext
 {
-    /**
-     * @var ClientInterface
-     */
-    protected $mailcatcher;
-
-    /**
-     * Sets MailCatcher Client instance.
-     *
-     * @param ClientInterface $mailcatcher
-     */
-    public function setMailCatcher(ClientInterface $mailcatcher)
-    {
-        $this->mailcatcher = $mailcatcher;
-    }
-
     /**
      * @Then /^(?P<count>\d+) mails? should be sent$/
      */
-    public function mailShouldBeSent($count)
+    public function assertNumMails($count)
     {
-        $count = (int) $count;
-        $actual = $this->mailcatcher->count();
-
-        if ($count !== $actual) {
-            throw new \InvalidArgumentException(sprintf('Expected %d mails to be sent, got %d.', $count, $actual));
-        }
+        parent::assertNumMails($count);
     }
 
     /**
@@ -55,7 +34,7 @@ class MailCatcherContext implements Context, MailCatcherAwareContext, Translatab
      */
     public function purge()
     {
-        $this->mailcatcher->purge();
+        parent::purge();
     }
 
     /**
