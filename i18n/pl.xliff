@@ -1,0 +1,15 @@
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+    <file original="global" source-language="en" target-language="pl" datatype="plaintext">
+        <header />
+        <body>
+            <trans-unit id="i-purge-mails">
+                <source><![CDATA[/^(?:|I )purge mails$/]]></source>
+                <target><![CDATA[/^(?:|że )wyczyszczę e-maile$/]]></target>
+            </trans-unit>
+            <trans-unit id="mails-should-be-sent">
+                <source><![CDATA[/^(?P<count>\d+) mails? should be sent$/]]></source>
+                <target><![CDATA[/^(?P<count>\d+) wiadomoś(?:ć|ci) powinn(?:a|o|y) zostać wysłan(?:a|ych|e)$/]]></target>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>

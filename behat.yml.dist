@@ -6,6 +6,6 @@ default:
         - FeatureContext:
             mailcatcher_smtp_host: localhost
             mailcatcher_smtp_port: 1025
-        - Kibao\Behat\MailCatcherExtension\MailCatcherContext
+        - Kibao\Behat\MailCatcherExtension\Context\MailCatcherContext
   extensions:
     Kibao\Behat\MailCatcherExtension\Extension:

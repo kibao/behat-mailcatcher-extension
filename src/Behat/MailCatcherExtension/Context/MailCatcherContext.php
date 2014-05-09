@@ -8,10 +8,10 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace Kibao\Behat\MailCatcherExtension;
+namespace Kibao\Behat\MailCatcherExtension\Context;
 
 use Behat\Behat\Context\Context;
-use Kibao\Behat\MailCatcherExtension\Context\MailCatcherAwareContext;
+use Behat\Behat\Context\TranslatableContext;
 use Kibao\MailCatcher\ClientInterface;
 
 /**
@@ -20,7 +20,7 @@ use Kibao\MailCatcher\ClientInterface;
  *
  * @author Przemysław Piechota <kibao.pl@gmail.com>
  */
-class MailCatcherContext implements Context, MailCatcherAwareContext
+class MailCatcherContext implements Context, MailCatcherAwareContext, TranslatableContext
 {
     /**
      * @var ClientInterface
@@ -38,7 +38,7 @@ class MailCatcherContext implements Context, MailCatcherAwareContext
     }
 
     /**
-     * @Then /^(\d+) mails? should be sent$/
+     * @Then /^(?P<count>\d+) mails? should be sent$/
      */
     public function mailShouldBeSent($count)
     {
@@ -51,10 +51,21 @@ class MailCatcherContext implements Context, MailCatcherAwareContext
     }
 
     /**
-     * @When /^I purge mails$/
+     * @When /^(?:|I )purge mails$/
      */
     public function purge()
     {
         $this->mailcatcher->purge();
     }
+
+    /**
+     * Returns list of definition translation resources paths.
+     *
+     * @return string[]
+     */
+    public static function getTranslationResources()
+    {
+        return glob(__DIR__ . '/../../../../i18n/*.xliff');
+    }
+
 }
