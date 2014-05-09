@@ -19,7 +19,7 @@ class ExtensionSpec extends ObjectBehavior
         $this->shouldHaveType('Kibao\Behat\MailCatcherExtension\Extension');
     }
 
-    function it_is_named_mink()
+    function it_is_named_kibao_mailcatcher()
     {
         $this->getConfigKey()->shouldReturn('kibao_mailcatcher');
     }
