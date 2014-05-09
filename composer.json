@@ -1,6 +1,8 @@
 {
     "name": "kibao/behat-mailcatcher-extension",
+    "type": "behat-extension",
     "description": "MailCatcher extension for Behat",
+    "keywords": ["behat", "extension", "email", "mail", "mailcatcher"],
     "license": "MIT",
     "authors": [
         {
