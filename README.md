@@ -1,5 +1,7 @@
 MailCatcher Extension
 ==================
+[![Build Status](https://travis-ci.org/kibao/behat-mailcatcher-extension.svg?branch=master)](https://travis-ci.org/kibao/behat-mailcatcher-extension)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/kibao/behat-mailcatcher-extension/badges/quality-score.png?s=d544d02de38918a960dd4f64e167aec97f8c09bb)](https://scrutinizer-ci.com/g/kibao/behat-mailcatcher-extension/)
 
 [MailCatcher](http://mailcatcher.me) is a super simple SMTP server which catches any message sent to it.
 
